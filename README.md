@@ -2,13 +2,33 @@
 
 
 
-A collection of small Python ETL projects focused on web scraping,
+A curated collection of small Python ETL projects focused on web scraping,
 
-data cleaning, and structured data storage.
+data extraction, cleaning, and structured storage.
+
+
+
+Each project is self-contained and demonstrates a specific scraping or ETL
+
+pattern.
 
 
 
 \## Projects
 
-\- (to be added)
+
+
+\### 🎬 Movies Web Scraping ETL
+
+\- Scrapes movie ranking data from a public website
+
+\- Cleans and validates extracted data
+
+\- Stores results in CSV and SQLite formats
+
+
+
+📁 Project location:
+
+`projects/movies-web-scraping-etl/`
 

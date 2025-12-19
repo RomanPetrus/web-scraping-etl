@@ -1,0 +1,25 @@
+# ===== Python runtime files =====
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ===== Virtual environments =====
+.venv/
+venv/
+env/
+
+# ===== IDE / editors =====
+.vscode/
+.idea/
+
+# ===== OS files =====
+.DS_Store
+Thumbs.db
+
+# ===== Project outputs (generated data) =====
+outputs/
+*.csv
+*.db
+*.sqlite
+*.sqlite3

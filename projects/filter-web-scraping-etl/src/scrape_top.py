@@ -7,18 +7,17 @@ from pathlib import Path
 
 # ---- CONSTANTS ----
 URL = 'https://web.archive.org/web/20230902185655/https://en.everybodywiki.com/100_Most_Highly-Ranked_Films'
-
 BASE_DIR = Path(__file__).resolve().parent.parent # Project root directory path
 OUTPUT_DIR = BASE_DIR/"outputs" # Project output directory path
 OUTPUT_DIR.mkdir(exist_ok=True) # Creates the output directory if it does not already exist
 
-CSV_PATH = OUTPUT_DIR/"movies.csv"
-DB_NAME = OUTPUT_DIR/"Movies.db"
+CSV_PATH = OUTPUT_DIR/"N_films.csv"
+DB_NAME = OUTPUT_DIR/"N_Movies.db"
 
-TABLE_NAME = 'Top_50'
-TOP_N = 50
+TABLE_NAME = 'Top_25'
+TOP_N = 25
 
-COLUMNS = ["Average Rank", "Film", "Year"]
+COLUMNS = ["Film", "Year", "Rotten Tomatoes' Top 100"]
 
 # ---- ETL FUNCTIONS ----
 def extract(url: str)-> str:
@@ -36,46 +35,43 @@ def transform(html: str, top_n: int = TOP_N) -> pd.DataFrame:
     """Parse HTML, extract top_n rows, return DataFrame"""
     soup = BeautifulSoup(html, "html.parser")
     tables = soup.find_all("tbody")
-
     if not tables:
         raise ValueError("No tables found on the page") # Fail fast if the expected table structure is missing
         
-    rows = tables[0].find_all("tr") # <tr> — table row
+    rows = tables[0].find_all("tr") # <tr> — table row    
+    records = []
     
-    records = []    
     for row in rows:
         col = row.find_all("td") # <td> — table data
         if len(col) < len(COLUMNS):
             continue
-        data_dict = {
-            COLUMNS[0]: col[0].get_text(strip=True),
-            COLUMNS[1]: col[1].get_text(strip=True),
-            COLUMNS[2]: col[2].get_text(strip=True)
-            }
-        records.append(data_dict)        
+        year = pd.to_numeric(col[2].get_text(strip=True), errors="coerce")
+        if pd.isna(year):
+            print(year)
+            continue
+
+        if  2000 <= year <= 2009:
+            data_dict = {
+                COLUMNS[0]: col[1].get_text(strip=True),
+                COLUMNS[1]: year,
+                COLUMNS[2]: col[3].get_text(strip=True)
+                }
+            records.append(data_dict)              
         
         if len(records) == top_n:
             break
         
     df = pd.DataFrame(records, columns=COLUMNS)
-    # Convert numeric columns to integers (fail-safe conversion)
-    df[COLUMNS[0]] = pd.to_numeric(df[COLUMNS[0]], errors="coerce").astype("Int64")
-    df[COLUMNS[2]] = pd.to_numeric(df[COLUMNS[2]], errors="coerce").astype("Int64")
-    
-    # Remove rows with missing required numeric values and reset row indexing
-    df = df.dropna(subset=[COLUMNS[0], COLUMNS[2]]).reset_index(drop=True)
-    # dropna removes rows with missing values
-    # subset defines which columns are checked for missing values
-    # reset_index(drop=True) resets row numbering after rows were removed
+  
     return df            
 
 def load_csv(df:pd.DataFrame, csv_path: str) -> None:
     """Save DataFrame to CSV"""
-    df.to_csv(str(csv_path), index=False)
+    df.to_csv(csv_path, index=False)
     
 def load_sql(df: pd.DataFrame, db_name: str, table_name: str) -> None:
     """Save DataFrame to SQLite"""
-    with sqlite3.connect(str(db_name)) as conn:
+    with sqlite3.connect(db_name) as conn:
         df.to_sql(table_name, conn, if_exists="replace", index=False)
        
 def main() -> None:

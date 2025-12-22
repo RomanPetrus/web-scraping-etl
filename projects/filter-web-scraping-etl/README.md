@@ -2,23 +2,69 @@
 
 
 
-Extracts movie ranking data from a Top 100 web page and applies filtering rules.
+A small Python ETL project that scrapes movie ranking data from a Top 100 web page,
+
+applies filtering rules, and stores the processed results in structured formats.
 
 
 
-\## Tasks
+\## What this project does
 
-* Extract Film, Year, and Top 100 headers
-* Restrict results to top 25 entries
-* Filter films released in the 2000s (year >= 2000)
+
+
+\- Extracts movie title, release year, and ranking information
+
+\- Restricts the dataset to the top 25 entries
+
+\- Filters films released in the 2000s (year ≥ 2000)
+
+\- Saves the processed data to CSV and SQLite formats
+
+
+
+\## Technologies used
+
+
+
+\- Python
+
+\- requests
+
+\- BeautifulSoup
+
+\- pandas
+
+\- SQLite
 
 
 
 \## How to run
 
-''' bat
+
+
+From the project root directory:
+
+
+
+```bash
 
 python src/scrape\_top.py
 
-'''
+```
+
+
+
+\## Output
+
+
+
+Generated files are saved in the outputs/ directory:
+
+
+
+CSV file containing the filtered movie data
+
+
+
+SQLite database with the same dataset
 

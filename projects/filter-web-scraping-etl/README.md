@@ -1,4 +1,4 @@
-\# Top Scrape \& Filter ETL
+# Top Scrape \& Filter ETL
 
 
 
@@ -8,38 +8,32 @@ applies filtering rules, and stores the processed results in structured formats.
 
 
 
-\## What this project does
+## What this project does
 
 
 
-\- Extracts movie title, release year, and ranking information
+- Extracts movie title, release year, and ranking information
 
-\- Restricts the dataset to the top 25 entries
+- Restricts the dataset to the top 25 entries
 
-\- Filters films released in the 2000s (year ≥ 2000)
+- Filters films released in the 2000s (year ≥ 2000)
 
-\- Saves the processed data to CSV and SQLite formats
-
-
-
-\## Technologies used
+- Saves the processed data to CSV and SQLite formats
 
 
 
-\- Python
-
-\- requests
-
-\- BeautifulSoup
-
-\- pandas
-
-\- SQLite
+## Technologies used
 
 
 
-\## How to run
+- Python
+- requests
+- BeautifulSoup
+- pandas
+- SQLite
 
+
+## How to run
 
 
 From the project root directory:
@@ -53,18 +47,11 @@ python src/scrape\_top.py
 ```
 
 
-
-\## Output
-
-
+## Output
 
 Generated files are saved in the outputs/ directory:
 
-
-
 CSV file containing the filtered movie data
-
-
 
 SQLite database with the same dataset
 

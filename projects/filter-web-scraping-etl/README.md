@@ -42,7 +42,7 @@ From the project root directory:
 
 ```bash
 
-python src/scrape\_top.py
+python src/scrape_top.py
 
 ```
 

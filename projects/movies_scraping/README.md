@@ -1,4 +1,4 @@
-# Movies Web Scraping ETL
+# Movies Scraping
 
 A simple Python ETL pipeline that scrapes movie ranking data from the
 web, processes it, and stores the results in CSV and SQLite formats.
@@ -20,7 +20,7 @@ web, processes it, and stores the results in CSV and SQLite formats.
 
 ## How to run
 
-Run the script:
+From the project root directory:
 
 ``` bash
 python src/scrape_movies.py

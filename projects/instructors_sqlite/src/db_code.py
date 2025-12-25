@@ -2,58 +2,77 @@ import sqlite3
 import pandas as pd
 from pathlib import Path
 
-table_name = 'INSTRUCTOR'
+# --- PATHS ---
+CODE_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = CODE_DIR.parent
+DATA_DIR = PROJECT_DIR/"data"
+    
+OUTPUT_DIR = PROJECT_DIR/"outputs" # Project output directory path
+OUTPUT_DIR.mkdir(exist_ok=True)
 
-#This information can be updated for the case of any other kind of table.
-attribute_list = ['ID', 'FNAME', 'LNAME', 'CITY', 'CCODE']
+DB_PATH = OUTPUT_DIR/"STAFF.db"
+CSV_PATH = DATA_DIR / "INSTRUCTOR.csv"
 
-BASE_DIR = Path(__file__).resolve().parent
-file_path = BASE_DIR / "INSTRUCTOR.csv"
+# ---CONSTANTS---
+TABLE_NAME = 'INSTRUCTOR'
+ATTRIBUTE_LIST = ['ID', 'FNAME', 'LNAME', 'CITY', 'CCODE']
 
-# Read the CSV data
-df = pd.read_csv(file_path, names = attribute_list)
-
-# Connect to the SQLite3 service
-with sqlite3.connect('STAFF.db') as conn:
-    # Load the CSV to the database
-    df.to_sql(table_name, conn, if_exists='replace', index=False)
-    print("DB is ready")
-
-    # Query 1: Display all rows of the table
-    query_statement = f"SELECT * FROM {table_name}"
-    query_output = pd.read_sql(query_statement, conn)
-    print(query_statement)
-    print(query_output)
-
-    # Query 2: Display only the FNAME column for the full table
-    query_statement = f"SELECT FNAME FROM {table_name}"
-    query_output = pd.read_sql(query_statement, conn)
-    print(query_statement)
-    print(query_output)
-
-    # Query 3: Display the count of the total number of rows.
-    query_statement = f"SELECT COUNT(*) FROM {table_name}"
-    query_output = pd.read_sql(query_statement, conn)
-    print(query_statement)
-    print(query_output)
-
-# Define data to be appended
+# Data to append
 data_dict = {'ID' : [100],
             'FNAME' : ['John'],
             'LNAME' : ['Doe'],
             'CITY' : ['Paris'],
             'CCODE' : ['FR']}
-
 data_append = pd.DataFrame(data_dict)
 
-# Connect to the SQLite3 service
-with sqlite3.connect('STAFF.db') as conn:
-    # Append data to the table
-    data_append.to_sql(table_name, conn, if_exists='append', index=False)
-    print('Data appended successfully')
+# ---- ETL FUNCTIONS ----
+def extract(csv_path) -> pd.DataFrame:
+    """Read the CSV data into a DataFrame."""
+    if not csv_path.exists():
+        raise FileNotFoundError(f"CSV not found: {csv_path}")
+        
+    df = pd.read_csv(CSV_PATH, names = ATTRIBUTE_LIST)
+    return df
+
+def load_sql(df:pd.DataFrame, db_path:Path, table_name:str, if_exists_mode:str) -> None:
+    """Save DataFrame to SQLite."""
+    with sqlite3.connect(db_path) as conn: # Connect to the SQLite3 service
+        df.to_sql(table_name, conn, if_exists=if_exists_mode, index=False)
+        print(f"DB write done: if_exists='{if_exists_mode}'")       
+    
+def read_db(db_path:Path, table_name:str, selected_columns:str="*") -> pd.DataFrame:
+    """Run a SELECT query and return the result as a DataFrame."""    
+    #columns_sql = ", ".join(selected_columns)
+    
+    query = f"SELECT {selected_columns} FROM {table_name}"
+    with sqlite3.connect(db_path) as conn:
+        output = pd.read_sql(query, conn)
+    print(query)
+    print(output)
+    return output
+        
+   
+def main() -> None:
+    df = extract(CSV_PATH)
+    print("Preview of dataframe:")
+    print(df.head())
+    
+    load_sql(df, DB_PATH, TABLE_NAME, "replace")
+    
+    # Query 1: Display all rows of the table
+    read_db(DB_PATH, TABLE_NAME, '*')
+    
+    # Query 2: Display only the FNAME column for the full table
+    read_db(DB_PATH, TABLE_NAME, 'FNAME')
+    
+    # Query 3: Display the count of the total number of rows
+    read_db(DB_PATH, TABLE_NAME, "COUNT(*) AS n")
+    load_sql(data_append, DB_PATH, TABLE_NAME, "append")
     
     # Query 4: Display the count of the total number of rows
-    query_statement = f"SELECT COUNT(*) AS n FROM {table_name}"
-    query_output = pd.read_sql(query_statement, conn)
-    print(query_statement)
-    print(query_output)
+    read_db(DB_PATH, TABLE_NAME, "COUNT(*) AS n")
+    
+    
+if __name__ == "__main__":
+    main()
+    

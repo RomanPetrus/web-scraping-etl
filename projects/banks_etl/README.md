@@ -25,3 +25,35 @@ projects/banks_etl/
 ├─ logs/
 └─ README.md
 ```
+
+## Technologies Used
+- Python
+- pandas
+- SQLite
+- Jupyter Notebook
+
+## How to Run
+From the project root directory:
+
+```bash
+python src/banks_etl.py
+```
+
+## Output
+
+The script creates or updates the following files:
+
+- outputs/largest_banks_data.csv
+Cleaned and enriched dataset of the largest banks by market capitalization.
+
+- outputs/banks.db
+SQLite database containing the largest_banks table with market
+capitalization values in USD and additional converted currencies.
+
+During execution, a log file is written to:
+- logs/etl_process.log
+
+## Notes
+
+An exploratory Jupyter notebook is included to document data inspection
+and validate transformation logic before implementation in the ETL script.

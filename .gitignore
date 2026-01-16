@@ -1,8 +1,18 @@
-# ===== Python runtime files =====
+# ===== Python runtime =====
 __pycache__/
+.ipynb_checkpoints/
 *.pyc
 *.pyo
 *.pyd
+
+# ===== Databases & logs =====
+*.db
+*.log
+
+# ===== Project outputs =====
+projects/**/outputs/
+projects/**/logs/
+projects/instructors_sqlite/data/
 
 # ===== Virtual environments =====
 .venv/
@@ -16,10 +26,3 @@ env/
 # ===== OS files =====
 .DS_Store
 Thumbs.db
-
-# ===== Project outputs (generated data) =====
-outputs/
-*.csv
-*.db
-*.sqlite
-*.sqlite3

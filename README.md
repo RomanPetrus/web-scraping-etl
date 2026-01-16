@@ -39,4 +39,14 @@ pattern.
 `projects/instructors_sqlite/`
 
 
+### 🏦 Banks ETL (Market Capitalization)
+-Extracts the largest banks table from an archived Wikipedia page
+-Cleans and validates market capitalization values
+-Enriches data with currency conversions using external exchange-rate CSV
+-Stores results in CSV and SQLite and runs example SQL queries
+-Includes an exploratory notebook to validate transformation logic
+
+📁 Project location:
+`projects/banks_etl/`
+
 
